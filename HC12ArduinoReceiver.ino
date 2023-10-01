@@ -22,6 +22,7 @@ void loop() { // run over and over
    while (HC12.available()) {             // If HC-12 has data
     incomingByte = HC12.read();          // Store each icoming byte from HC-12
     readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable
+    Serial.println(readBuffer);
   }
 
   if (readBuffer == "Armed") {
@@ -29,8 +30,8 @@ void loop() { // run over and over
     armed = true;
   }
 
-  if (armed = true) {
-    HC12.write("On-Board armed")
+  if (armed == true) {
+    HC12.write("On-Board armed");
     if (HC12.available()) {
       Serial.write(HC12.read());
     }
