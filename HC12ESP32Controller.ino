@@ -30,7 +30,7 @@ void loop() {
   while (HC12.available()) {
     incomingByte = HC12.read();
     readBuffer += char(incomingByte);        
-    //Serial.write(HC12.read());  
+    Serial.write(HC12.read());  
 
   }
   while (Serial.available()) {      
@@ -55,6 +55,6 @@ void controller(){
     }
   }
 
-  
+  delay(100);
 
 }
