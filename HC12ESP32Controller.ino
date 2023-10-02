@@ -54,6 +54,10 @@ void controller(){
       HC12.write("Disarmed");
     }
   }
+  if (PS4.R2())){
+    
+  }
+}  
 
   delay(100);
 
