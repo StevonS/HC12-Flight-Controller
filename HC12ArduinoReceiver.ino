@@ -1,5 +1,3 @@
-
-
 // See SoftwareSerial example 
 // https://www.arduino.cc/en/tutorial/SoftwareSerialExample
 
@@ -22,12 +20,17 @@ void loop() { // run over and over
    while (HC12.available()) {             // If HC-12 has data
     incomingByte = HC12.read();          // Store each icoming byte from HC-12
     readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable
+    //readBuffer = HC12.read();
     Serial.println(readBuffer);
   }
 
   if (readBuffer == "Armed") {
     Serial.println("ARMED");
     armed = true;
+  }
+  if (readBuffer == "Disarmed") {
+    Serial.println("DIARMED");
+    armed = false;
   }
 
   if (armed == true) {
@@ -40,6 +43,6 @@ void loop() { // run over and over
     }
   }
   
-
-
+  readBuffer = "";
+  delay(100);
 }
