@@ -6,7 +6,12 @@
 
 #define RX 2 //Connect to the TX pin of the HC-12
 #define TX 3 //Connect to the RX pin of the HC-12
+
 Servo ESC; 
+Servo Elevators;
+Servo AileronL;
+Servo AileronR;
+Servo Rudder;
 SoftwareSerial HC12(RX, TX);
 
 bool armed = false;
@@ -91,17 +96,39 @@ void loop() { // run over and over
       //duplicating the lines as explained adds 2 variables, then you can duplicate them again, and then change the variable names so they are in the right order
     }
   }
-  motorControl();
-  //Serial.println(throttle);
+
+  
+  motorController();
+  servoController();
 
   readBuffer = "";
   delay(100);
 }
 
-void motorControl(){
+void servoController(){
+  if (RStickX > 15 && RStickX < -15){
+      aileronValue = map(RstickX, -2,2 , 0,30);
+    
+      AileronL.write(aileronValue);
+      AileronR.write(aileronValue);
+  }
+  if (RStickY > 15 && RStickY < -15 ){
+    elevatorValue = map(RStickY, -2,2 , 0,30);
+    Elevators.write(elevatorValue);
+
+  }
+  if (rudderRight == 1){
+  Rudder.write(20);
+  }
+  if (rudderLeft == 1){
+  Rudder.write(-20);
+  }
+}
+
+
+void motorController(){
   
   throttle = map(throttle, 0, 255, 0, 240);
-  //Serial.println(throttle);
   ESC.write(throttle);
 
 }
