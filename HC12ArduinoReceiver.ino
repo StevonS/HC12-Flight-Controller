@@ -107,21 +107,21 @@ void loop() { // run over and over
 
 void servoController(){
   if (RStickX > 15 && RStickX < -15){
-      aileronValue = map(RstickX, -2,2 , 0,30);
+      aileronValue = map(RstickX, -2,2 , 60,120);
     
       AileronL.write(aileronValue);
       AileronR.write(aileronValue);
   }
   if (RStickY > 15 && RStickY < -15 ){
-    elevatorValue = map(RStickY, -2,2 , 0,30);
+    elevatorValue = map(RStickY, -2,2 , 60,120);
     Elevators.write(elevatorValue);
 
   }
   if (rudderRight == 1){
-  Rudder.write(20);
+  Rudder.write(70);
   }
   if (rudderLeft == 1){
-  Rudder.write(-20);
+  Rudder.write(110);
   }
 }
 
