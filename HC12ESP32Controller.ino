@@ -7,7 +7,7 @@ byte incomingByte;
 String readBuffer = "";
 bool startup = false;
 int connectionStatus;
-
+bool reply = false;
 void setup() {
   Serial.begin(115200);
   PS4.begin("EC:62:60:1E:E1:68");
@@ -20,9 +20,16 @@ void setup() {
 
 void loop() {
 
-  while (connection == false){
-    HC12.write("Connection");
-    
+  while(connection == false){
+    HC12.write("Connection Request");
+    while (HC12.available()) {
+      incomingByte = HC12.read();
+      readBuffer += char(incomingByte); 
+    }
+    if(readBuffer == "Connection Established"){
+      connection == true;
+      break;
+    }
   }
   
   controller();
