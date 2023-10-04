@@ -6,6 +6,7 @@ bool armed = false;
 byte incomingByte;
 String readBuffer = "";
 bool startup = false;
+int connectionStatus;
 
 void setup() {
   Serial.begin(115200);
@@ -15,19 +16,16 @@ void setup() {
   Serial.begin(115200);           // Serial port to computer
   HC12.begin(9600, SERIAL_8N1, RXD2, TXD2);   
   Serial.println("Ready.");
-
 }
-
-
-void sendData(){
-
-}
-
 
 void loop() {
 
+  while (connection == false){
+    HC12.write("Connection");
+    
+  }
+  
   controller();
-
   while (HC12.available()) {
     incomingByte = HC12.read();
     readBuffer += char(incomingByte);        
@@ -39,6 +37,8 @@ void loop() {
 
   }
 
+  
+  
   if (readBuffer == "On-Board Armed"){
     startup = true;
     Serial.println("Starting Transmission:");
@@ -76,6 +76,7 @@ void controller(){
     HC12.print(",");
     HC12.print(PS4.L1());//if you just need to send 4 variables,simply change this value to 0
     HC12.println("");
+    HC12.print(ConnectionStatus);
   //you can add even numbers of variables, ex add 2, 4, 6 ...(so 3, 5, 7, 9... variables in total) before this line by adding a variable line, then a comma line, another variable line then a second comma line under the 5th variable line but before the println.  
   //for the purpose of simplicity, it is easier to add in groups of 2, so that less modification is necessary on the other end
   //if you have more variables than you are using, change the variable to 0, as above explained, again for the purpose of simplicity
