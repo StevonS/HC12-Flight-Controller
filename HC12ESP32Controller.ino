@@ -83,7 +83,7 @@ void controller(){
   }else{
     LStickY = 0;
   } 
-  if (PS4.RStickY() > 15 || PS4.RStickY() < -15){
+  if (PS4.RStickX() > 15 || PS4.RStickX() < -15){
     RStickX = PS4.RStickX();
   }else{
     RStickX = 0;
