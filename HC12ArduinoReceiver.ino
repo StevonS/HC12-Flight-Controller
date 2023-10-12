@@ -2,7 +2,7 @@
 // https://www.arduino.cc/en/tutorial/SoftwareSerialExample
 
 #include <SoftwareSerial.h>
-#include <Servo.h>
+#include <Servo.h>;
 
 #define RX 2 //Connect to the TX pin of the HC-12
 #define TX 3 //Connect to the RX pin of the HC-12
@@ -41,18 +41,24 @@ int d7;
 int d8;
 int elevatorValue;
 int aileronValue;
+int speed;
 
 const char delimiter = ",";
 
 void setup() {
   Serial.begin(9600);
   HC12.begin(9600);
-  ESC.attach(9,1000,2000);
+  
   pinMode(5, OUTPUT);
   digitalWrite(5, LOW);   
 }
 
-void loop() { // run over and over
+void arm(){
+  setSpeed(0); //Sets speed variable
+  delay(2000);
+}
+
+void loop() {
 
   while (HC12.available() && armed == false) {             // If HC-12 has data
     incomingByte = HC12.read();          // Store each icoming byte from HC-12
@@ -64,7 +70,7 @@ void loop() { // run over and over
       Serial.print("Connection");
     }
   }
-
+  
   
   if (readBuffer == "Armed") {
     Serial.println("ARMED");
@@ -78,66 +84,71 @@ void loop() { // run over and over
   if (armed == true && startup == false) {
     //SYSTEMS STARTUP
     Serial.println("startup");
-    HC12.write("Onboard Armed");
+    ESC.attach(9,800,2000);
+    arm();
     startup = true;
+    HC12.write("Onboard Armed");
   }
   
-  if (armed == true && startup == true){
-    input = HC12.readStringUntil('\n');
-    if (input.length() > 0) {
+  if (armed == true && startup == true) {
+      input = HC12.readStringUntil('\n');
+      if (input.length() > 0) {
         Serial.println(input);
 
-       d1 = input.indexOf(delimiter);
-        throttle = input.substring(0, d1).toInt();
-    
-        d2 = input.indexOf(delimiter, d1+1);
-        LStickX = input.substring(d1, d2).toInt();
-
-        d3 = input.indexOf(delimiter,d2+1);//you can add 2 variables, or 4... by adding these 4 lines 
-        LStickY = input.substring(d2, d3).toInt();//you can add 2 variables, or 4... by adding these 4 lines
-    
-        d4 = input.indexOf(delimiter, d3+1);//you can add 2 variables, or 4... by adding these 4 lines 
-        RStickX = input.substring(d3, d4).toInt();//     under this line
-
-        d5 = input.indexOf(delimiter, d4+1);//you can add 2 variables, or 4... by adding these 4 lines 
-        RStickY = input.substring(d4, d5).toInt();//you can add 2 variables, or 4... by adding these 4 lines
-    
-        d6 = input.indexOf(delimiter, d5+1);//you can add 2 variables, or 4... by adding these 4 lines 
-        rudderRight = input.substring(d5, d6).toInt();//     under this line
-
-        d7 = input.indexOf(delimiter, d6+1);//you can add 2 variables, or 4... by adding these 4 lines 
-        rudderLeft = input.substring(d6, d7).toInt();//     under this line
-
-        d8 = input.indexOf(delimiter, d7+1);//you can add 2 variables, or 4... by adding these 4 lines 
-        status = input.substring(d7, d8).toInt();//  
-
-        buffer = input.substring(d8).toInt();//but before this one
-      //if you change the number of variables, follow instructions in comments above
-      //duplicating the lines as explained adds 2 variables, then you can duplicate them again, and then change the variable names so they are in the right order
-      delay(10);
+        // Split the input into substrings using the delimiter ","
+        String values[8];
+        int numValues = splitString(input, values, 8);
+        
+        if (numValues == 8) {
+          throttle = values[0].toInt();
+          LStickX = values[1].toInt();
+          LStickY = values[2].toInt();
+          RStickX = values[3].toInt();
+          RStickY = values[4].toInt();
+          rudderRight = values[5].toInt();
+          rudderLeft = values[6].toInt();
+          status = values[7].toInt();
+        }
+        
+      }
     }
-  }
 
   if(status != 1 && armed == true && startup == true){
     emercencyProcedures();
   }
-  motorController();
-  servoController();
 
+  servoController();
+  setSpeed(throttle);
   readBuffer = "";
   status = 0;
   delay(200);
 }
 
 void emercencyProcedures(){
-  Serial.println(d1);
-  Serial.println(d2);
-  Serial.println(d3);
-  Serial.println(d4);
-  Serial.println(d5);
-  Serial.println(d6);
-  Serial.println(d7);
-  Serial.println(d8);
+ 
+}
+
+int splitString(String input, String values[], int maxValues) {
+  int index = 0;
+  int lastIndex = 0;
+  int numValues = 0;
+
+  while (index < input.length() && numValues < maxValues) {
+    if (input.charAt(index) == ',') {
+      values[numValues] = input.substring(lastIndex, index);
+      lastIndex = index + 1;
+      numValues++;
+    }
+    index++;
+  }
+
+  if (lastIndex < index && numValues < maxValues) {
+    // Add the last value (if any) to the array
+    values[numValues] = input.substring(lastIndex);
+    numValues++;
+  }
+
+  return numValues;
 }
 
 void servoController(){
@@ -161,9 +172,7 @@ void servoController(){
 }
 
 
-void motorController(){
-  
-  throttle = map(throttle, 0, 255, 0, 240);
-  ESC.write(throttle);
-
+void setSpeed(int speed){
+  int angle = map(speed, 0, 255, 0, 200); //Sets servo positions to different speeds 
+  ESC.write(angle);
 }
