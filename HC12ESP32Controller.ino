@@ -112,7 +112,7 @@ void controller(){
     HC12.print(",");
     HC12.print(connectionStatus);
     HC12.print(",");
-    HC12.print("0");
+    HC12.print(PS4.Triangle());
     HC12.println("");
     
   //you can add even numbers of variables, ex add 2, 4, 6 ...(so 3, 5, 7, 9... variables in total) before this line by adding a variable line, then a comma line, another variable line then a second comma line under the 5th variable line but before the println.  
