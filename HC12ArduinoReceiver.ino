@@ -30,6 +30,7 @@ int RStickY = 0;
 int rudderRight = 0;
 int rudderLeft = 0;
 int status = 0;
+int rearm = 0;
 int buffer;
 int d1; //setup to reference delimiter locations so its easier to follow
 int d2;
@@ -49,8 +50,7 @@ void setup() {
   Serial.begin(9600);
   HC12.begin(9600);
   
-  pinMode(5, OUTPUT);
-  digitalWrite(5, LOW);   
+
 }
 
 void arm(){
@@ -85,6 +85,10 @@ void loop() {
     //SYSTEMS STARTUP
     Serial.println("startup");
     ESC.attach(9,800,2000);
+    //Elevators;
+    //AileronL;
+    //AileronR;
+    Rudder.attach(5);
     arm();
     startup = true;
     HC12.write("Onboard Armed");
@@ -96,10 +100,10 @@ void loop() {
         Serial.println(input);
 
         // Split the input into substrings using the delimiter ","
-        String values[8];
-        int numValues = splitString(input, values, 8);
-        
-        if (numValues == 8) {
+        String values[9];
+        int numValues = splitString(input, values, 9);
+        Serial.println(numValues);
+        if (numValues == 9) {
           throttle = values[0].toInt();
           LStickX = values[1].toInt();
           LStickY = values[2].toInt();
@@ -108,6 +112,7 @@ void loop() {
           rudderRight = values[5].toInt();
           rudderLeft = values[6].toInt();
           status = values[7].toInt();
+          rearm = values[8].toInt();
         }
         
       }
@@ -117,15 +122,21 @@ void loop() {
     emercencyProcedures();
   }
 
+  if(rearm == 1){
+    arm();
+    Serial.println("rearmed");
+  } else{
+    setSpeed(throttle);
+  }
   servoController();
-  setSpeed(throttle);
+
   readBuffer = "";
   status = 0;
   delay(200);
 }
 
 void emercencyProcedures(){
- 
+ Serial.println("Emergency!");
 }
 
 int splitString(String input, String values[], int maxValues) {
@@ -164,10 +175,15 @@ void servoController(){
 
   }
   if (rudderRight == 1){
-  Rudder.write(70);
+    Serial.println("RudderRight");
+    Rudder.write(40);
   }
   if (rudderLeft == 1){
-  Rudder.write(110);
+    Serial.println("RudderLeft");
+    Rudder.write(120);
+  }
+  if(rudderRight == 0 && rudderLeft == 0) {
+    Rudder.write(80);
   }
 }
 
