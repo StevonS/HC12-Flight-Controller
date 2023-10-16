@@ -167,7 +167,7 @@ int splitString(String input, String values[], int maxValues) {
 
 void aileronControl(){
   if (RStickX > 15 && RStickX < -15){
-      aileronValue = map(RStickX, -2,2 , 60,120);
+      aileronValue = map(RStickX, -2,2 , 40,120);
     
       AileronL.write(aileronValue);
       AileronR.write(aileronValue);
@@ -176,7 +176,7 @@ void aileronControl(){
 
 void eleavtorControl(){
   if (RStickY > 15 && RStickY < -15 ){
-    elevatorValue = map(RStickY, -2,2 , 60,120);
+    elevatorValue = map(RStickY, -2,2 , 40,120);
     Elevators.write(elevatorValue);
   }
 }
