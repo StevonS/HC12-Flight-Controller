@@ -128,8 +128,11 @@ void loop() {
   } else{
     setSpeed(throttle);
   }
-  servoController();
-
+  
+  aileronController();
+  elevatorControl();
+  rudderControl();
+  
   readBuffer = "";
   status = 0;
   delay(200);
@@ -162,14 +165,13 @@ int splitString(String input, String values[], int maxValues) {
   return numValues;
 }
 
-void aileronController(){
+void aileronControl(){
   if (RStickX > 15 && RStickX < -15){
       aileronValue = map(RStickX, -2,2 , 60,120);
     
       AileronL.write(aileronValue);
       AileronR.write(aileronValue);
-  }
-  
+  }  
 }
 
 void eleavtorControl(){
@@ -178,6 +180,7 @@ void eleavtorControl(){
     Elevators.write(elevatorValue);
   }
 }
+
 void rudderControl(){
   if (rudderRight == 1){
     Serial.println("RudderRight");
