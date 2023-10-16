@@ -85,9 +85,9 @@ void loop() {
     //SYSTEMS STARTUP
     Serial.println("startup");
     ESC.attach(9,800,2000);
-    //Elevators;
-    //AileronL;
-    //AileronR;
+    Elevators.attach(11);
+    AileronL.attach(10);
+    AileronR.attach(6);
     Rudder.attach(5);
     arm();
     startup = true;
@@ -162,18 +162,23 @@ int splitString(String input, String values[], int maxValues) {
   return numValues;
 }
 
-void servoController(){
+void aileronController(){
   if (RStickX > 15 && RStickX < -15){
       aileronValue = map(RStickX, -2,2 , 60,120);
     
       AileronL.write(aileronValue);
       AileronR.write(aileronValue);
   }
+  
+}
+
+void eleavtorControl(){
   if (RStickY > 15 && RStickY < -15 ){
     elevatorValue = map(RStickY, -2,2 , 60,120);
     Elevators.write(elevatorValue);
-
   }
+}
+void rudderControl(){
   if (rudderRight == 1){
     Serial.println("RudderRight");
     Rudder.write(40);
@@ -185,6 +190,7 @@ void servoController(){
   if(rudderRight == 0 && rudderLeft == 0) {
     Rudder.write(80);
   }
+
 }
 
 
