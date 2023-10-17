@@ -102,7 +102,7 @@ void loop() {
         // Split the input into substrings using the delimiter ","
         String values[9];
         int numValues = splitString(input, values, 9);
-        Serial.println(numValues);
+        
         if (numValues == 9) {
           throttle = values[0].toInt();
           LStickX = values[1].toInt();
@@ -129,7 +129,7 @@ void loop() {
     setSpeed(throttle);
   }
   
-  aileronController();
+  aileronControl();
   elevatorControl();
   rudderControl();
   
@@ -166,32 +166,35 @@ int splitString(String input, String values[], int maxValues) {
 }
 
 void aileronControl(){
-  if (RStickX > 15 && RStickX < -15){
-      aileronValue = map(RStickX, -2,2 , 40,120);
+  if (RStickX > 15 || RStickX < -15){
+      aileronValue = map(RStickX, -128,128 , 40,120);
     
       AileronL.write(aileronValue);
       AileronR.write(aileronValue);
   }  
 }
 
-void eleavtorControl(){
-  if (RStickY > 15 && RStickY < -15 ){
-    elevatorValue = map(RStickY, -2,2 , 40,120);
-    Elevators.write(elevatorValue);
-  }
+void elevatorControl(){
+  
+  elevatorValue = map(RStickY, -128,128 , 40,120);
+  Serial.println(elevatorValue);  
+  Elevators.write(elevatorValue);
 }
 
 void rudderControl(){
   if (rudderRight == 1){
+    
     Serial.println("RudderRight");
     Rudder.write(40);
   }
   if (rudderLeft == 1){
+    
     Serial.println("RudderLeft");
     Rudder.write(120);
   }
   if(rudderRight == 0 && rudderLeft == 0) {
     Rudder.write(80);
+    
   }
 
 }
