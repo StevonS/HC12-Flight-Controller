@@ -42,13 +42,13 @@ void loop() {
     readBuffer += char(incomingByte);        
   }
 
-  
+  Serial.println(readBuffer);
   if(readBuffer == "Connection Established" && connection == false){
     connection = true;
     Serial.println("Connection");
   }
   
-  Serial.println(readBuffer);
+  
   if (readBuffer == "Onboard Armed"){
     startup = true;
     Serial.println("Starting Transmission:");
