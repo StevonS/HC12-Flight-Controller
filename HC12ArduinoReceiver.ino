@@ -43,6 +43,7 @@ int d8;
 int elevatorValue;
 int aileronValue;
 int speed;
+int timer = 0;
 
 const char delimiter = ",";
 
@@ -139,7 +140,13 @@ void loop() {
 }
 
 void emercencyProcedures(){
- Serial.println("Emergency!");
+ if(timer => 20){
+   Serial.println("Emergency!");
+   HC12.write("Emergency!");
+   setSpeed(0);
+   Elevators.write(elevatorValue); 
+ }
+ timer =+ 1;
 }
 
 int splitString(String input, String values[], int maxValues) {
@@ -165,13 +172,13 @@ int splitString(String input, String values[], int maxValues) {
   return numValues;
 }
 
+
 void aileronControl(){
-  if (RStickX > 15 || RStickX < -15){
-      aileronValue = map(RStickX, -128,128 , 40,120);
+    aileronValue = map(RStickX, -128,128 , 40,120);
     
-      AileronL.write(aileronValue);
-      AileronR.write(aileronValue);
-  }  
+    AileronL.write(aileronValue);
+    AileronR.write(aileronValue);
+  
 }
 
 void elevatorControl(){
@@ -182,21 +189,22 @@ void elevatorControl(){
 }
 
 void rudderControl(){
+  
   if (rudderRight == 1){
     
     Serial.println("RudderRight");
     Rudder.write(40);
   }
+  
   if (rudderLeft == 1){
-    
     Serial.println("RudderLeft");
     Rudder.write(120);
   }
+  
   if(rudderRight == 0 && rudderLeft == 0) {
     Rudder.write(80);
-    
   }
-
+  
 }
 
 
