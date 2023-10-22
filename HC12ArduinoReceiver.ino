@@ -87,9 +87,9 @@ void loop() {
     Serial.println("startup");
     ESC.attach(9,800,2000);
     Elevators.attach(11);
-    AileronL.attach(10);
-    AileronR.attach(6);
-    Rudder.attach(5);
+    AileronL.attach(6);
+    AileronR.attach(5);
+    Rudder.attach(10);
     arm();
     startup = true;
     HC12.write("Onboard Armed");
