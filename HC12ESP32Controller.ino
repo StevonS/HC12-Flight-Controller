@@ -115,9 +115,6 @@ void controller(){
     HC12.print(PS4.Triangle());
     HC12.println("");
     
-  //you can add even numbers of variables, ex add 2, 4, 6 ...(so 3, 5, 7, 9... variables in total) before this line by adding a variable line, then a comma line, another variable line then a second comma line under the 5th variable line but before the println.  
-  //for the purpose of simplicity, it is easier to add in groups of 2, so that less modification is necessary on the other end
-  //if you have more variables than you are using, change the variable to 0, as above explained, again for the purpose of simplicity
   }
 
 
