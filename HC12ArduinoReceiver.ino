@@ -1,5 +1,4 @@
-// See SoftwareSerial example 
-// https://www.arduino.cc/en/tutorial/SoftwareSerialExample
+
 
 #include <SoftwareSerial.h>
 #include <Servo.h>;
